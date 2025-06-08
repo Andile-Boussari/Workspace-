@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulaire de validation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    
+  <style>
+    body {
+      background-color: #f8f9fa;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .container img {
+      width: 80px;
+      display: block;
+      margin: 0 auto 15px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-check-label, label {
+      font-size: 1rem;
+    }
+
+    .form-control {
+      width: 100%;
+      max-width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1rem;
+    }
+
+    .tableau-container {
+      margin-top: 30px;
+      display: none;
+    }
+
+    .tableau-resume td:nth-child(2),
+    .tableau-resume td:nth-child(3) {
+      text-align: center;
+    }
+
+    .tableau-resume tr:nth-child(1) { background-color: #d3d3d3; }
+    .tableau-resume tr:nth-child(2) { background-color: #90ee90; }
+    .tableau-resume tr:nth-child(3) { background-color: #ffd700; }
+    .tableau-resume tr:nth-child(4) { background-color: #ffcccb; }
+
+    .required-star {
+      color: red;
+      margin-left: 4px;
+    }
+
+    td .info-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Pour rendre les placeholder en italique */
+   .italic-placeholder::placeholder {
+   font-style: italic;
+   color: #6c757d; /* gris clair Bootstrap */
+  }
+
+  .tooltip-inner {
+    max-width: 600px !important;  /* Largeur personnalisée */
+    white-space: normal;          /* Autorise les retours à la ligne */
+    text-align: left;
+    font-size: 0.9rem;
+    background-color: #fff !important;  /* Fond blanc */
+    color: #212529;              /* Couleur de texte Bootstrap */
+    border: 1px solid #ccc;      /* Petite bordure grise */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Légère ombre */
+  }
+
+
+  </style>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<body>
+  <div id="messageFormulaire" class="alert text-center" style="display:none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 600px;"></div>
+  <div class="container">
+    <img src="https://storage.googleapis.com/endurance-apps-liip/media/cache/no_filter_grid_fs/5d27428812574a08a67ab0d3" alt="Logo">
+    <h2>Formulaire de validation</h2>
+    <p class="text-muted text-center fst-italic" style="font-size: 0.9rem;">
+      <span class="required-star">*</span> Indique un champs obligatoires
+    </p>
+
+
+    <div class="form-group">
+      <label for="email">📧 E-mail :<span class="required-star">*</span></label>
+      <!-- <input type="email" id="email" class="form-control" placeholder="Veuillez entrez votre adresse e-mail"> -->
+      <input type="email" id="email" class="form-control" placeholder="Veuillez entrer votre adresse e-mail" style="font-style: italic;">
+    </div>
+
+    <!--<div class="form-group">
+      <label for="codeCassini">🔍 Code CASSINI :</label>
+      <input type="text" id="codeCassini" class="form-control" placeholder="Ex : A1790"  oninput="filtrerApplications()">
+    </div>-->
+    <div class="form-group">
+      <label for="codeCassini" class="d-block">
+        🔍 Code CASSINI :
+        <span class="text-muted fst-italic" style="font-size: 0.9rem; display: block;">
+        Veuillez entrer un code CASSINI pour filtrer la liste des applications.
+        </span>
+      </label>
+       <input type="text" id="codeCassini" class="form-control" placeholder="Ex : A1790 :" oninput="filtrerApplications()">
+    </div>
+
+
+
+    <div class="form-group">
+      <label for="application">📋 Application métier:<span class="required-star">*</span></label>
+        </span>
+      <select id="application" class="form-select" onchange="mettreAJourCodeCassini()"></select>
+    </div>
+
+   <div class="form-group">
+  <label class="form-label">✅ Type de Validation:<span class="required-star">*</span></label>
+  <p class="text-muted fst-italic mb-1" style="font-size: 0.9rem;">Veuillez indiquer le type de validation</p>
+
+  <div class="form-check">
+    <input type="radio" id="technique" name="validation" value="Technique" class="form-check-input" onchange="toggleTableau()">
+    <label for="technique" class="form-check-label">Technique</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="fonctionnel" name="validation" value="Fonctionnel" class="form-check-input" onchange="toggleTableau()">
+    <label for="fonctionnel" class="form-check-label">Fonctionnel</label>
+  </div>
+</div>
+
+
+    <div class="form-group">
+      <label for="niveauValidation">Niveau de validation:<span class="required-star">*</span> </label>
+      <select id="niveauValidation" class="form-select">
+        <!-- <option value="">Veuillez indiquez le niveau de validation </option> -->
+        <option value="" disabled selected style="font-style: italic; color: #6c757d;">Veuillez indiquer le niveau de validation</option>
+        <option value="Validé avec réserve">Validé avec réserve</option>
+        <option value="Validé sans réserve">Validé sans réserve</option>
+        <option value="Non valide">Non valide</option>
+        <option value="Pas de Validation Technique Possible">Pas de Validation Technique Possible</option>
+        <option value="Pas de Validation Fonctionnelle Possible">Pas de Validation Fonctionnelle Possible</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+       <label for="tempsPasse">⏱ Temps passé:<span class="required-star">*</span></label>
+       <span class="text-muted fst-italic d-block mb-1" style="font-size: 0.9rem;">
+       Veuillez indiquer le temps passé en minutes.
+       </span>
+       <input type="number" min="5" id="tempsPasse" class="form-control" placeholder="5" />
+    </div>
+
+
+    <div class="form-group">
+     <label for="commentaires">💬 Commentaires :</label>
+     <textarea id="commentaires" class="form-control italic-placeholder" rows="1" placeholder="Veuillez indiquer les commentaires éventuels."></textarea>
+    </div>
+
+
+    
+    <div class="tableau-container mt-4 p-3 border rounded bg-light" id="tableauContainer">
+      <label class="form-label">📑 Résumé des cas de tests fonctionnels:<span class="required-star">*</span></label>
+      <p class="text-muted fst-italic mt-2" style="font-size: 0.9rem;">
+  🛈 Merci de respecter l’ordre de saisie : commencez par <strong>Nb de cas PREVUS</strong> puis <strong>EXECUTÉS</strong> avant de renseigner les autres champs.
+</p>
+
+      <table class="table table-bordered table-sm align-middle text-center">
+    <tbody>
+      <tr class="table-secondary">
+        <td class="text-start">Nb de cas PREVUS / EXECUTE</td>
+        <td>
+          <input type="number" id="nbCasPrevus" min="0" class="form-control form-control-sm text-center" value="0" oninput="verifierCohérence(); appliquerOrdreRemplissage();" >
+        </td>
+        <td>
+          <input type="number" id="nbCasExecutes" min="0"class="form-control form-control-sm text-center" value="0" oninput="verifierCohérence(); appliquerOrdreRemplissage();">
+        </td>
+      </tr>
+      <tr class="table-success">
+        <td class="text-start">Nb de cas VALIDES</td>
+        <td colspan="2">
+          <input type="number" id="nbCasValides" min="0" class="form-control form-control-sm text-center" value="0" oninput="verifierCohérence()">
+        </td>
+      </tr>
+      <tr class="table-warning">
+        <td class="text-start">Nb VALIDES AVEC RESERVES</td>
+        <td colspan="2">
+          <input type="number" id="nbCasValidesAvecReserves" min="0" class="form-control form-control-sm text-center" value="0" oninput="verifierCohérence()">
+        </td>
+      </tr>
+      <tr class="table-danger">
+        <td class="text-start">Nb NON VALIDES</td>
+        <td colspan="2">
+          <input type="number" id="nbCasNonValides" min="0" class="form-control form-control-sm text-center" value="0" oninput="verifierCohérence()">
+        </td>
+      </tr>
+
+<tr class="table-info">
+  <td class="text-start">
+    <span class="info-label">
+      <span 
+        id="tooltipCoherence"
+        data-bs-toggle="tooltip"
+        data-bs-placement="right"
+        style="cursor: help; color: #0d6efd;">
+        ℹ️
+      </span>
+      Contrôle de cohérence
+    </span>
+  </td>
+  <td colspan="2">
+    <input type="text" id="controleCohérence" class="form-control form-control-sm text-center fw-bold" readonly>
+  </td>
+</tr>
+
+
+
+</tr>
+    </tbody>
+  </table>
+</div>
+
+    <div id="messageFormulaire" class="mt-3 text-center"></div>
+    <!-- <button class="btn btn-primary mt-3" onclick="envoyerFormulaire()">🚀 Envoyer</button> -->
+    <button id="btnEnvoyer" class="btn btn-primary mt-3" onclick="envoyerFormulaire()">🚀 Envoyer</button>
+
+  </div>
+
+  <script>
+    let applications = [];
+
+    function chargerApplications() {
+      google.script.run.withSuccessHandler(function(data) {
+        applications = data;
+        afficherApplications();
+      }).getApplications();
+    }
+
+    function afficherApplications() {
+      const dropdown = document.getElementById("application");
+      dropdown.innerHTML = '<option value="" disabled selected style="font-style: italic; color: #6c757d;">Veuillez sélectionner une application</option>';
+      applications.forEach(app => {
+        const option = document.createElement("option");
+        option.value = `${app.code} - ${app.nom}`;
+        option.textContent = `${app.code} - ${app.nom}`;
+        dropdown.appendChild(option);
+      });
+    }
+
+    function filtrerApplications() {
+      const codeCassini = document.getElementById("codeCassini").value.toUpperCase().trim();
+      const dropdown = document.getElementById("application");
+      dropdown.innerHTML = '<option value="">Veuillez sélectionner une application </option>';
+
+      const filtres = applications.filter(app => app.code.toUpperCase().includes(codeCassini));
+      (filtres.length ? filtres : applications).forEach(app => {
+        const option = document.createElement("option");
+        option.value = `${app.code} - ${app.nom}`;
+        option.textContent = `${app.code} - ${app.nom}`;
+        dropdown.appendChild(option);
+      });
+    }
+
+    function mettreAJourCodeCassini() {
+      const val = document.getElementById("application").value;
+      if (val.includes(" - ")) {
+        document.getElementById("codeCassini").value = val.split(" - ")[0];
+      }
+    }
+
+   function toggleTableau() {
+  const type = document.querySelector('input[name="validation"]:checked')?.value;
+  const tableau = document.getElementById("tableauContainer");
+
+  if (type === "Fonctionnel") {
+    tableau.style.display = "block";
+  } else {
+    tableau.style.display = "none";
+    reinitialiserTableauFonctionnel(); // ⬅️ Réinitialise quand on passe en Technique
+  }
+}
+
+function verifierCohérence() {
+  const nbPrevus = parseInt(document.getElementById("nbCasPrevus").value) || 0;
+  const nbExecutes = parseInt(document.getElementById("nbCasExecutes").value) || 0;
+  const nbValides = parseInt(document.getElementById("nbCasValides").value) || 0;
+  const nbValidesReserves = parseInt(document.getElementById("nbCasValidesAvecReserves").value) || 0;
+  const nbNonValides = parseInt(document.getElementById("nbCasNonValides").value) || 0;
+
+  const totalCalculé = nbValides + nbValidesReserves + nbNonValides;
+  const controle = document.getElementById("controleCohérence");
+  const ligneControle = controle.closest("tr");
+  const bouton = document.getElementById("btnEnvoyer");
+
+  // 🚫 Si Exécutés > Prévus → Non cohérent
+  if (nbExecutes > nbPrevus) {
+    controle.value = "❌ Non cohérent";
+    ligneControle.className = "table-danger";
+    bouton.disabled = true;
+    return;
+  }
+
+  // ⚠️ Somme incohérente
+  if (nbExecutes !== totalCalculé) {
+    controle.value = "⚠️ Somme incohérente";
+    ligneControle.className = "table-danger";
+    bouton.disabled = true;
+    return;
+  }
+
+  //✅ Cohérent - majorité de cas valides
+  if ((nbValides + nbValidesReserves) > nbNonValides) {
+    controle.value = "✅ Cohérent";
+    ligneControle.className = "table-success";
+    bouton.disabled = false;
+    return;
+  }
+
+  // ✅ Cohérent - majorité de non valides
+  if ((nbValides + nbValidesReserves) < nbNonValides) {
+    controle.value = "✅ Cohérent";  
+    ligneControle.className = "table-danger";
+    bouton.disabled = false;
+    return;
+  }
+
+  // ✅ Cohérent - égalité
+  controle.value = "✅ Cohérent";
+  ligneControle.className = "table-info";
+  bouton.disabled = false;
+}
+
+
+ <!-- Version modifiée avec règles de gestion PV_TYPE, ZLS_VALIDATION2, ZLS_VALIDATION3 -->
+<!-- Partie modifiée uniquement dans le script JS -->
+
+function envoyerFormulaire() {
+  let email = document.getElementById("email").value;
+  let codeCassini = document.getElementById("codeCassini").value;
+  let application = document.getElementById("application").value;
+  let validation = document.querySelector('input[name="validation"]:checked')?.value;
+  let niveauValidation = document.getElementById("niveauValidation").value;
+  let tempsPasse = document.getElementById("tempsPasse").value;
+  let commentaires = document.getElementById("commentaires").value;
+
+  let nbCasPrevus = document.getElementById("nbCasPrevus")?.value || "";
+  let nbCasExecutes = document.getElementById("nbCasExecutes")?.value || "";
+  let nbCasValides = document.getElementById("nbCasValides")?.value || "";
+  let nbCasValidesAvecReserves = document.getElementById("nbCasValidesAvecReserves")?.value || "";
+  let nbCasNonValides = document.getElementById("nbCasNonValides")?.value || "";
+  let controleCohérence = document.getElementById("controleCohérence")?.value || "";
+
+  if (!email || !codeCassini || !application || !validation || !niveauValidation || !tempsPasse) {
+    afficherMessage("❌ Veuillez remplir tous les champs obligatoires.", "danger");
+    return;
+  }
+
+  // ✅ Règle de gestion PV_TYPE
+  let pvType = "";
+  if (validation === "Technique") {
+    pvType = "1_PV_TECH";
+  } else if (validation === "Fonctionnel") {
+    pvType = "2_PV_FONC";
+  }
+
+  // ✅ Règle de gestion ZLS_VALIDATION2 et ZLS_VALIDATION3
+  let zls2 = "", zls3 = "";
+  switch (niveauValidation) {
+    case "Validé sans réserve":
+      zls2 = "OK";
+      zls3 = "OK";
+      break;
+    case "Validé avec réserve":
+      zls2 = "OK_RESERVE";
+      zls3 = "OK";
+      break;
+    case "Non valide":
+      zls2 = "NOK";
+      zls3 = "NOK";
+      break;
+    case "Pas de Validation Technique Possible":
+      zls2 = "PTTP";
+      zls3 = "AUTRE";
+      break;
+    case "Pas de Validation Fonctionnelle Possible":
+      zls2 = "PTFP";
+      zls3 = "AUTRE";
+      break;
+  }
+
+  google.script.run.withSuccessHandler(function(response) {
+    afficherMessage(response, "success");
+    reinitialiserFormulaire();
+  }).validerFormulaire({
+    email,
+    codeCassini,
+    application,
+    validation,
+    niveauValidation,
+    tempsPasse,
+    commentaires,
+    pvType,
+    zls2,
+    zls3,
+    nbCasPrevus,
+    nbCasExecutes,
+    nbCasValides,
+    nbCasValidesAvecReserves,
+    nbCasNonValides,
+    controleCohérence
+  });
+}
+
+
+
+document.getElementById("niveauValidation").addEventListener("change", function() {
+  const selectedValue = this.value;
+
+  if (selectedValue === "Pas de Validation Technique Possible") {
+    document.getElementById("technique").checked = true;
+    toggleTableau();
+    activerDesactiverTableauFonctionnel(true);
+  } else if (selectedValue === "Pas de Validation Fonctionnelle Possible") {
+    document.getElementById("fonctionnel").checked = true;
+    toggleTableau();
+    activerDesactiverTableauFonctionnel(false);
+  } else {
+    activerDesactiverTableauFonctionnel(true);
+  }
+
+  // 👇 Appelle notre fonction ici
+  appliquerContraintesNiveauValidation();
+});
+
+
+
+
+
+function afficherMessage(message, type) {
+  const messageDiv = document.getElementById("messageFormulaire");
+  messageDiv.className = `alert alert-${type} text-center`;
+  messageDiv.innerHTML = message;
+  messageDiv.style.display = "block";
+
+  // ⏳ On augmente la durée à 12 secondes
+  setTimeout(() => {
+    messageDiv.style.display = "none";
+  }, 12000);
+}
+
+function reinitialiserFormulaire() {
+  // Réinitialise tous les champs manuellement
+  document.getElementById("email").value = "";
+  document.getElementById("codeCassini").value = "";
+  document.getElementById("application").selectedIndex = 0;
+  document.querySelectorAll('input[name="validation"]').forEach(el => el.checked = false);
+  document.getElementById("niveauValidation").selectedIndex = 0;
+  document.getElementById("tempsPasse").value = "";
+  document.getElementById("commentaires").value = "";
+
+  // Champs des cas de test fonctionnels
+  document.getElementById("nbCasPrevus").value = "0";
+  document.getElementById("nbCasExecutes").value = "0";
+  document.getElementById("nbCasValides").value = "0";
+  document.getElementById("nbCasValidesAvecReserves").value = "0";
+  document.getElementById("nbCasNonValides").value = "0";
+  document.getElementById("controleCohérence").value = "0";
+
+  // Masquer le tableau si besoin
+  document.getElementById("tableauContainer").style.display = "none";
+}
+
+function reinitialiserTableauFonctionnel() {
+  document.getElementById("nbCasPrevus").value = "0";
+  document.getElementById("nbCasExecutes").value = "0";
+  document.getElementById("nbCasValides").value = "0";
+  document.getElementById("nbCasValidesAvecReserves").value = "0";
+  document.getElementById("nbCasNonValides").value = "0";
+  document.getElementById("controleCohérence").value = "";
+  
+  const ligneControle = document.getElementById("controleCohérence").closest("tr");
+  ligneControle.className = "table-info";
+  document.getElementById("btnEnvoyer").disabled = false;
+}
+
+function activerDesactiverTableauFonctionnel(etat) {
+  const champs = [
+    "nbCasPrevus",
+    "nbCasExecutes",
+    "nbCasValides",
+    "nbCasValidesAvecReserves",
+    "nbCasNonValides",
+    "controleCohérence"
+  ];
+
+  champs.forEach(id => {
+    const champ = document.getElementById(id);
+    champ.disabled = !etat; // Désactive si état = false
+    champ.style.backgroundColor = etat ? "" : "#f0f0f0"; // gris clair si désactivé
+  });
+}
+
+
+function appliquerContraintesNiveauValidation() {
+  const niveau = document.getElementById("niveauValidation").value;
+
+  const valides = document.getElementById("nbCasValides");
+  const reserves = document.getElementById("nbCasValidesAvecReserves");
+  const nonValides = document.getElementById("nbCasNonValides");
+
+  // Reset (réactive tous les champs au départ)
+  [valides, reserves, nonValides].forEach(champ => {
+    champ.disabled = false;
+    champ.style.backgroundColor = ""; // reset couleur
+  });
+
+  if (niveau === "Non valide") {
+    // Glisse les cas valides + avec réserves
+    [valides, reserves].forEach(champ => {
+      champ.value = "";
+      champ.disabled = true;
+      champ.style.backgroundColor = "#f0f0f0";
+    });
+  }
+
+  if (niveau === "Validé sans réserve" || niveau === "Validé avec réserve") {
+    // Glisse les cas non valides
+    nonValides.value = "";
+    nonValides.disabled = true;
+    nonValides.style.backgroundColor = "#f0f0f0";
+  }
+
+  if (niveau === "Pas de Validation Fonctionnelle Possible") {
+  document.getElementById("fonctionnel").checked = true;
+  toggleTableau();
+  activerDesactiverTableauFonctionnel(false);
+
+  // ⬇️ Glisse aussi les champs fonctionnels manuellement
+  ["nbCasValides", "nbCasValidesAvecReserves", "nbCasNonValides"].forEach(id => {
+    const champ = document.getElementById(id);
+    champ.value = "";
+    champ.disabled = true;
+    champ.style.backgroundColor = "#f0f0f0";
+  });
+
+  return; // ✅ On sort pour éviter que les autres blocs ne les réactivent
+}
+
+
+  // Mise à jour du contrôle en direct
+  verifierCohérence();
+}
+
+function appliquerOrdreRemplissage() {
+  const prevus = parseInt(document.getElementById("nbCasPrevus").value) || 0;
+  const executes = parseInt(document.getElementById("nbCasExecutes").value) || 0;
+
+  const champExecutes = document.getElementById("nbCasExecutes");
+  const champsAutres = [
+    document.getElementById("nbCasValides"),
+    document.getElementById("nbCasValidesAvecReserves"),
+    document.getElementById("nbCasNonValides")
+  ];
+
+  // Étape 1 : tant que PREVUS vide → tout est désactivé sauf lui
+  if (prevus === 0) {
+    champExecutes.disabled = true;
+    champsAutres.forEach(c => c.disabled = true);
+    return;
+  }
+
+  // Étape 2 : PREVUS rempli → EXECUTES actif, les autres encore bloqués
+  champExecutes.disabled = false;
+
+  if (executes === 0) {
+    champsAutres.forEach(c => c.disabled = true);
+    return;
+  }
+
+  // Étape 3 : PREVUS + EXECUTES remplis → les autres deviennent actifs
+  champsAutres.forEach(c => c.disabled = false);
+}
+
+
+
+ window.onload = function () {
+  chargerApplications();
+
+  // ✅ Crée manuellement le tooltip HTML
+  const tooltipCoherence = document.getElementById("tooltipCoherence");
+  const htmlContent = `
+    ✅ <strong>Cohérent</strong> : Nb VALIDES + AVEC RESERVES + NON VALIDES = Nb EXECUTES<br>
+    ❌ <strong>Non Cohérent</strong> : Nb EXECUTES &gt; Nb PREVUS<br>
+    ⚠️ <strong>Somme incohérente</strong> : Somme ≠ Nb EXECUTES
+  `;
+
+  const tooltip = new bootstrap.Tooltip(tooltipCoherence, {
+    title: htmlContent,
+    html: true,
+    placement: 'right',
+    trigger: 'hover focus'
+  });
+};
+
+
+
+  </script>
+</body>
+</html>
